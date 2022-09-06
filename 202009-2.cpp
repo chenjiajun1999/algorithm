@@ -22,13 +22,34 @@ int main() {
         trails.emplace_back(trail);
     }
 
-    vector<pair<int, int>> box;
-    for (int i = 0; i < 2; ++i) {
-        int x, y;
-        cin >> x >> y;
-        box.emplace_back(x, y);
+    int ans[2] = {0};
+    for (const auto &trail:trails) {
+        bool flag = false;
+        int count = 0;
+        int maxCount = 0;
+        for (int i = 0; i < trail.size(); i++) {
+            int x = trail[i].first, y = trail[i].second;
+            if (x <= xr && x >= xl && y <= yu && y >= yd) {
+                flag = true;
+                if (i == 0)
+                    continue;
+                int xp = trail[i - 1].first, yp = trail[i - 1].second;
+                if (xp <= xr && xp >= xl && yp <= yu && yp >= yd) {
+                    count++;
+                    maxCount = max(maxCount, count);
+                } else {
+                    count = 1;
+                }
+
+            }
+        }
+        if (maxCount >= k)
+            ans[1]++;
+        if (flag)
+            ans[0]++;
     }
 
-
+    cout << ans[0] << endl;
+    cout << ans[1] << endl;
     return 0;
 }
