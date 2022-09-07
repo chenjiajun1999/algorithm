@@ -1,5 +1,5 @@
 //
-// Created by Alberta on 2022/9/6.
+// Created by Hachikuji on 2022/9/6.
 //
 
 #include <bits/stdc++.h>
@@ -30,7 +30,10 @@ struct Role {
 
 int main() {
 
-    int n, m, q;
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m, q = 0;
     cin >> n >> m >> q;
 
     map<string, Role> roles;
@@ -58,55 +61,63 @@ int main() {
         roles[role.name] = role;
     }
 
-    map<string, vector<Role>> users;
-    map<string, vector<Role>> groups;
+    map<string, vector<string>> users;
+    map<string, vector<string>> groups;
 
     for (int i = 0; i < m; ++i) {
 
-        string name;
+        string roleName;
         int ns;
-        cin >> name >> ns;
+        cin >> roleName >> ns;
         for (int j = 0; j < ns; ++j) {
-            string type, roleName;
-            cin >> type >> roleName;
+            string type, name;
+            cin >> type >> name;
             if (type == "u") {
-                users[name].emplace_back(roles[roleName]);
+                users[name].emplace_back(roleName);
             } else {
-                groups[name].emplace_back(roles[roleName]);
+                groups[name].emplace_back(roleName);
             }
         }
     }
 
+    int ans[q];
+    memset(ans, 0, sizeof(ans));
     // 请求
     for (int i = 0; i < q; ++i) {
         string userName;
         int ng;
-        cin >> userName >> ng;
         vector<string> roleNames;
-        for (const auto &r:users[userName]) {
-            roleNames.emplace_back(r.name);
+
+        cin >> userName >> ng;
+
+        for (const auto &name:users[userName]) {
+            roleNames.emplace_back(name);
         }
         for (int j = 0; j < ng; ++j) {
             // 加入用户拥有的角色
             string groupName;
             cin >> groupName;
-            for (const auto &r:groups[groupName]) {
-                roleNames.emplace_back(r.name);
+            for (const auto &name:groups[groupName]) {
+                roleNames.emplace_back(name);
             }
         }
 
         string request, type, name;
         cin >> request >> type >> name;
-        bool flag = false;
         for (const auto &r:roleNames) {
-            if ((!roles[r].srcNames.empty() || roles[r].srcNames.count(name) != 0)
-                && roles[r].srcTypes.count(type) != 0
-                && roles[r].apis.count("*") != 0 || roles[r].apis.count(request) != 0) {
-                flag = true;
+
+
+            if ((roles[r].srcNames.empty() || roles[r].srcNames.count(name) != 0)
+                && (roles[r].srcTypes.count("*") != 0 || roles[r].srcTypes.count(type) != 0)
+                && (roles[r].apis.count("*") != 0 || roles[r].apis.count(request) != 0)) {
+                ans[i] = 1;
                 break;
             }
         }
-        cout << (flag ? 1 : 0) << endl;
+    }
+
+    for (int i = 0; i < q; ++i) {
+        cout << ans[i] << endl;
     }
 
     return 0;
