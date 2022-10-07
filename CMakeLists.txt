@@ -3,4 +3,4 @@ project(ccf-csp)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(csp 202203-3-90.cpp)
+add_executable(csp 202209-3-40.cpp)
