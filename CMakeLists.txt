@@ -3,4 +3,4 @@ project(data-structure-and-algorithm)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(demo ccf-csp/2022/202209-4.cpp)
+add_executable(demo csp/2022/202209-3.cpp)

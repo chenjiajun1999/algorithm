@@ -24,8 +24,8 @@ int main() {
     cin >> n;
 
     unordered_map<int, vector<pair<int, int>>> danger_areas;
-    priority_queue<pair<int, int>> danger_users;
     vector<vector<info>> total_infos;
+    vector<set<int>> answers;
 
     for (int i = 0; i < n; i++) {
 
@@ -33,21 +33,23 @@ int main() {
         cin >> r >> m;
 
         for (int j = 0; j < r; j++) {
+
             int dr;
             cin >> dr;
-            //;
 
-            if(danger_areas.count(dr) == 0){
-                danger_areas[dr].push_back({i,i+6});
+            if (danger_areas.count(dr) == 0) {
+                danger_areas[dr].push_back({i, i + 6});
                 continue;
             }
 
             // 连续的要合并
-            pair<int,int>& last = danger_areas[dr][danger_areas[dr].size()-1];
-            if(last.second >= i)
-                last.second = i+6;
+            pair<int, int> &last = danger_areas[dr][danger_areas[dr].size() - 1];
+
+            // 差一天也可以衔接起来 2022.10.11
+            if (last.second >= i - 1)
+                last.second = i + 6;
             else
-                danger_areas[dr].push_back({i,i+6});
+                danger_areas[dr].push_back({i, i + 6});
 
         }
 
@@ -65,26 +67,33 @@ int main() {
         total_infos.push_back(infos);
 
         set<int> ans;
-        for (int j = i; j >= i - 6 && j >= 0; j--) {
+        for (int j = max(i - 6, 0); j <= i; j++) {
             for (auto msg : total_infos[j]) {
+
                 if (msg.d < i - 6)
                     continue;
+
                 if (danger_areas.count(msg.r) == 0)
                     continue;
-                auto day = danger_areas[msg.r];
-                for(auto d:day){
-                    if(d.first <= msg.d && d.second>= msg.d && d.second>=i)
+
+                auto days = danger_areas[msg.r];
+                for (auto d:days) {
+
+                    if (d.first <= msg.d && d.second >= msg.d && d.second >= i)
                         ans.insert(msg.u);
                 }
             }
         }
 
+        answers.push_back(ans);
 
-        cout << i << " ";
+    }
 
-        for (int an : ans)
-            cout << an << " ";
-
+    for (int i = 0; i < answers.size(); i++) {
+        cout << i;
+        for (auto a:answers[i]) {
+            cout << " " << a;
+        }
         cout << endl;
     }
 
